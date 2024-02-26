@@ -11,6 +11,7 @@ import campo_minado.excecao.ExplosaoException;
 
 
 
+
 public class CampoTeste {
 	
 	private Campo campo;
@@ -91,5 +92,39 @@ public class CampoTeste {
 			assertFalse(campo.abrir());
 		});
 		
+	}
+	
+	
+	//Abrir campo 33 e verificar se o campo 22 abre e em seguida campo 11 abre 
+	@Test
+	void TesteAbrirCamposVizinhos() {
+		
+		Campo campo11 = new Campo(1,1);
+		Campo campo22 = new Campo(2,2);
+		
+		campo.adicionarVizinho(campo22);
+		campo22.adicionarVizinho(campo11);
+		
+		campo.abrir();
+		assertTrue(campo11.isAberto() && campo22.isAberto());
+	}
+	
+	@Test
+	void TesteAbrirCamposVizinhos2() {
+		
+		Campo campo11 = new Campo(1,1);
+		Campo campo12 = new Campo(1,2);
+		campo12.minar();
+		
+		Campo campo22 = new Campo(2,2);
+		
+		campo22.adicionarVizinho(campo11);
+		campo22.adicionarVizinho(campo12);
+		
+		
+		campo.adicionarVizinho(campo22);
+		campo.abrir();
+		
+		assertTrue(campo11.isFechado() && campo22.isAberto());
 	}
 }
