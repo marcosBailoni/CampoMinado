@@ -1,6 +1,9 @@
 package campo_minado.modelo;
 
 import java.util.List;
+
+import campo_minado.excecao.ExplosaoException;
+
 import java.util.ArrayList;
 
 public class Campo {
@@ -39,4 +42,45 @@ public class Campo {
 		}
 	}
 	
-}
+	//Se o campo estiver fechado == mudar o status de marcado:
+	void alternarMarcacao() {
+		if(!aberto) {
+			marcado = !marcado;
+		} 
+	}
+	
+	boolean abrir() {
+		if(!aberto && !marcado) {
+			aberto = true;
+			
+			if(minado) {
+				throw new ExplosaoException();
+			}
+			
+			if(vizinhancaSegura()) {
+				vizinhos.forEach(v -> v.abrir());
+			}
+			
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	boolean vizinhancaSegura() {
+		return vizinhos.stream().noneMatch(v -> v.minado);		
+	}
+	
+	void minar() {
+		
+		minado = true;
+	}
+	
+	
+	public boolean isMarcado() {
+		return marcado;
+	}
+	
+	
+ }
+
