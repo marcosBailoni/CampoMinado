@@ -7,22 +7,51 @@ import campo_minado.excecao.ExplosaoException;
 import java.util.ArrayList;
 
 public class Campo {
-
+	
+	//Constantes:
 	private final int linha;
 	private final int coluna;
 	
-	
+	//Variaveis
 	private boolean aberto;
 	private boolean minado;
 	private boolean marcado;
-	
-	private List<Campo> vizinhos = new ArrayList<>();
-	
+		
+	//Construtor:
 	Campo(int linha, int coluna) {
 		this.linha = linha;
 		this.coluna = coluna;
 	}
 	
+	//Gets abaixo: 
+	public boolean isMinado() {
+		return minado;
+	}
+	
+	public boolean isMarcado() {
+		return marcado;
+	}
+	
+	public boolean isAberto() {
+		return aberto;
+	}
+	
+	public boolean isFechado() {
+		return !aberto;
+	}
+
+	public int getLinha() {
+		return linha;
+	}
+
+	public int getColuna() {
+		return coluna;
+	}
+	
+	//Lista vizinhos:
+	private List<Campo> vizinhos = new ArrayList<>();
+	
+	//Método para definir os campos vizinhos de um campo:
 	boolean adicionarVizinho (Campo vizinho) {
 		
 		// verificar se são campos diferentes ou se é o mesmo
@@ -49,12 +78,21 @@ public class Campo {
 		} 
 	}
 	
+//	Metodo para abrir um campo: 
+//	verificar se está fechado e não pode estar marcado, 
+//	se estiver minado, lançar uma explosão exception
+//	verificar se algum vizinho é minado, caso não seja, abrir todo os vizinhos e rodar o abrir em cada um deles (rodar tudo isso novamente para cada vizinho) 		
+//	caso abra, retornar verdadeiro
+//	caso não abra, retornar falso
+	
+	
 	boolean abrir() {
 		if(!aberto && !marcado) {
 			aberto = true;
 			
 			if(minado) {
 				throw new ExplosaoException();
+				
 			}
 			
 			if(vizinhancaSegura()) {
@@ -62,6 +100,7 @@ public class Campo {
 			}
 			
 			return true;
+			
 		} else {
 			return false;
 		}
@@ -77,16 +116,38 @@ public class Campo {
 	}
 	
 	
-	public boolean isMarcado() {
-		return marcado;
+	boolean objetivoAlcancado() {
+		boolean desvendado = !minado && aberto;
+		boolean protegido = minado && marcado;
+		return desvendado || protegido;
 	}
 	
-	public boolean isAberto() {
-		return aberto;
+	long minasNaVizinhanca() {
+		return vizinhos.stream().filter(v -> v.minado).count();
+		
 	}
 	
-	public boolean isFechado() {
-		return !aberto;
+	void reiniciar() {
+		aberto = false;
+		minado = false;
+		marcado = false;
+	}
+	
+	public String toString() {
+		if(marcado) {
+			return "x";
+			
+		} else if (aberto && minado) {
+			return "*";
+			
+		} else if (aberto && minasNaVizinhanca() > 0) {
+			return Long.toString(minasNaVizinhanca());
+			
+		} else if(aberto) {
+			return " ";
+		} else {
+			return "?";
+		}
 	}
  }
 

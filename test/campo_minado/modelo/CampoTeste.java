@@ -1,5 +1,6 @@
 package campo_minado.modelo;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -127,4 +128,92 @@ public class CampoTeste {
 		
 		assertTrue(campo11.isFechado() && campo22.isAberto());
 	}
+	@Test
+	void TesteGetLinha() {
+		assertTrue(campo.getLinha() == 3);
+	}
+	@Test
+	void TesteGetColuna() {
+		assertTrue(campo.getColuna() == 3);
+	}
+	
+	@Test
+	void TesteObjetivoAlcandoCampo() {
+		campo.minar();
+		campo.alternarMarcacao();
+		assertTrue(campo.objetivoAlcancado());
+	}
+	@Test
+	void TesteObjetivoAlcandoCampo2() {
+		campo.abrir();
+		assertTrue(campo.objetivoAlcancado());
+	}
+	
+	@Test
+	void TesteMinasVizinhas( ) {
+		Campo campo22 = new Campo(2,2);
+		campo22.minar();
+		assertTrue(campo22.isMinado());
+
+		campo.adicionarVizinho(campo22);
+		assertTrue(campo.minasNaVizinhanca() == 1);
+		
+	}
+	@Test
+	void TesteRetornoString() {
+		campo.alternarMarcacao();
+		assertTrue(campo.toString() == "x");
+	}
+	
+	@Test
+	void TesteRetornoString2() {
+		try {
+			campo.minar();
+			campo.abrir();
+		} catch (ExplosaoException e) {
+			e.getMessage();
+		}
+		
+		assertTrue(campo.isAberto());
+		assertTrue(campo.toString() == "*");
+		
+	}
+	
+	
+	
+	@Test
+	void TesteRetornoString3() {
+		Campo campo22 = new Campo (2, 2);
+		campo22.minar();		
+		
+		campo.adicionarVizinho(campo22);		
+		campo.abrir();
+		
+		assertEquals("1", campo.toString());
+		
+
+	}
+	
+	@Test
+	void TesteRetornoString4() {
+		campo.abrir();
+		
+		assertEquals(" ", campo.toString());
+	}
+	
+	@Test
+	void TesteToString5() {
+		assertEquals("?", campo.toString());
+	}
+	
+	@Test
+	void TesteReiniciando() {
+		campo.reiniciar();
+		boolean testeAberto = campo.isAberto();
+		boolean testeMinado= campo.isMinado();
+		boolean testeMarcado = campo.isMarcado();
+		
+		assertFalse(testeAberto && testeMinado && testeMarcado);
+	}
+		
 }
