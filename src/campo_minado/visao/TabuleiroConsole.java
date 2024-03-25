@@ -1,7 +1,10 @@
 package campo_minado.visao;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Scanner;
 
+import campo_minado.excecao.ExplosaoException;
 import campo_minado.excecao.SairException;
 import campo_minado.modelo.Tabuleiro;
 
@@ -16,25 +19,65 @@ public class TabuleiroConsole {
 		executarJogo();
 	}
 
-	private void executarJogo() {	
+	private void executarJogo() {
 		try {
 			boolean continuar = true;
-			
+
 			while (continuar) {
-				
-			}
-				System.out.println("Outra partida ? (S/n");
+				cicloDoJogo();
+
+				System.out.println("Outra partida ? (S/n) ");
 				String resposta = entrada.nextLine();
-				
-				if(resposta.equalsIgnoreCase("n")) {
+
+				if ("n".equalsIgnoreCase(resposta)) {
 					continuar = false;
-				} else {	
+				} else {
 					tabuleiro.reiniciar();
-				} 				
-			} catch (SairException e) {
-				System.out.println("Tchau!!!");
-			} finally {
-				entrada.close();
+				}
 			}
-		}	
+
+		} catch (SairException e) {
+			System.out.println("Tchau!!!");
+		} finally {
+			entrada.close();
+		}
 	}
+
+	private void cicloDoJogo() {
+		try {
+			while(!tabuleiro.objetivoAlcancado()) {
+				System.out.println(tabuleiro);
+				
+				String digitado = capturarValorDigitado("Digite (x, y): ");
+				
+				Iterator<Integer> xy = Arrays.stream(digitado.split(","))
+						.map(e -> Integer.parseInt(e.trim())).iterator();
+				
+				digitado = capturarValorDigitado("1 - Abrir ou 2 - (Des)Marcar: ");
+						
+				if("1".equals(digitado)) {
+					tabuleiro.abrir(xy.next(), xy.next());
+				} else if("2".equals(digitado)) {
+					tabuleiro.alternarMarcarcao(xy.next(), xy.next());
+				}
+			}		
+		
+			System.out.println("Você ganhou!!!");
+		} catch(ExplosaoException e){
+			System.out.println("Você perdeu!!");
+		}
+
+	}
+
+	private String capturarValorDigitado(String texto) {
+		System.out.println(texto);
+		String digitado = entrada.nextLine();
+		
+		if("sair".equalsIgnoreCase(digitado)) {
+			throw new SairException();
+		}
+		
+		return digitado;
+	}
+	
+}

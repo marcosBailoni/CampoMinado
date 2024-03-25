@@ -8,6 +8,11 @@ public class Aplicacao {
 	public static void main(String[] args) {
 		
 		Tabuleiro tabuleiro = new Tabuleiro(6, 6, 6);		
-		new TabuleiroConsole(tabuleiro);		
+		new TabuleiroConsole(tabuleiro);
+		
+//		tabuleiro.alternarMarcarcao(4, 4);
+//		tabuleiro.alternarMarcarcao(4, 5);
+//		
+//		System.out.println(tabuleiro);
 	}
 }
